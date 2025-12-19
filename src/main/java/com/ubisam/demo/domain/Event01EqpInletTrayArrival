@@ -1,16 +1,17 @@
 package com.ubisam.demo.domain;
 
-import jakarta.persistence.Id;
 import lombok.Data;
 
 // 장비가 트레이 투입 Port에 도착 Event 보고
 @Data
 public class Event01EqpInletTrayArrival {
 
-    @Id
+    private String eventId;
     private Long timestamp;
+
     private ObjectTray trayObject;
     private ObjectCell batteryCell;
-    private String action; // Cell에 들어가면 In Event / Cell에서 나오면 Out Event
-    
+
+    private Action action; // Cell에 들어가면 In Event / Cell에서 나오면 Out Event
+    public enum Action { IN, OUT }
 }
