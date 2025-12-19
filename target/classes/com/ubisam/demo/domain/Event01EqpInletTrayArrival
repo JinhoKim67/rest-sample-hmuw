@@ -3,7 +3,7 @@ package com.ubisam.demo.domain;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-// 트레이에 셸 넣기
+// 장비가 트레이 투입 Port에 도착 Event 보고
 @Data
 public class Event01EqpInletTrayArrival {
 
