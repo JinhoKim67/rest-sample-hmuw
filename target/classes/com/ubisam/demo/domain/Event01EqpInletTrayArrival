@@ -5,7 +5,7 @@ import lombok.Data;
 
 // 트레이에 셸 넣기
 @Data
-public class Event01TrayCellBound {
+public class Event01EqpInletTrayArrival {
 
     @Id
     private Long timestamp;
