@@ -1,0 +1,6 @@
+이차전지용 배터리 JIG Formation 공장에서, Jig Formation 설비의 공정 이벤트를 PLC가 취합하여 Host 서버와 통신하고
+Host 서버는 이벤트 정보를 MS SQL DB로 저장하고 각 Cell의 모델별 공정조건, Route, Recipe 정보를 참조하여
+판단을 내리고, 최종 Cell을 배출하는 공장에서 Equipment와 Host간 통신하는 프로그램을 짜고 싶어. 이를 경우, 
+Java 언어로 Cell, Tray, Barcode Reader, Port, Buffer, Equipment, 제품 Model, Jig Formatoin 설비 등을 Object로 정의하고
+Cell 20개가 담긴 Tray를 Inlet Port에 투입하고, Jig Formation 공정을 마친 후 Outlet Port로 Cell을 배출하는 Event를 만들고 싶어.
+공장 자동화 및 PLC 전문가로서 이 과제에 대한 Java로 Object와 Event를 정의해줘.
