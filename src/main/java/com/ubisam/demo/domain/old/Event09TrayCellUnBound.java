@@ -1,4 +1,7 @@
-package com.ubisam.demo.domain;
+package com.ubisam.demo.domain.old;
+
+import com.ubisam.demo.domain.ObjectCell;
+import com.ubisam.demo.domain.ObjectTray;
 
 import lombok.Data;
 

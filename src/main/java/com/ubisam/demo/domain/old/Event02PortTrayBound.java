@@ -1,4 +1,7 @@
-package com.ubisam.demo.domain;
+package com.ubisam.demo.domain.old;
+
+import com.ubisam.demo.domain.ObjectPort;
+import com.ubisam.demo.domain.ObjectTray;
 
 import jakarta.persistence.Id;
 import lombok.Data;
