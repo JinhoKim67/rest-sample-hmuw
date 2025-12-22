@@ -11,10 +11,7 @@ public class Event04HostCellMoveStartAck {
     private String originalEventId;
 
     private AckStatus status;         // OK/NG 등
-    private Integer responseCode;      // W6040 (예: 0=OK, 그 외 NG 상세)
-    private Boolean hostTrouble;       // B0003 (NG면 true 권장)
-    private Integer troubleCode;       // W6003 (NG면 필수)
-    private String reason;             // 사람이 보는 설명
+    private String reason;            // NG면 이유
 
-    public enum AckStatus { OK, NG } 
+    public enum AckStatus { OK, NG }
 }
