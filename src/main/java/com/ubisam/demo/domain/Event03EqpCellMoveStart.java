@@ -8,7 +8,8 @@ public class Event03EqpCellMoveStart {
 
     private String eventId;
     private Long timestamp;
-    private ObjectCell ObjectTray;
+    
+    private ObjectTray ObjectTray;
     private ObjectCell ObjectCell;
 
     private Action action; // Cell에 들어가면 In Event / Cell에서 나오면 Out Event

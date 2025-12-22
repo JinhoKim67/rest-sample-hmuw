@@ -8,9 +8,6 @@ public class Event05EqpCellInfoRequest {
 
     private String eventId;
     private Long timestamp;
-
+    
     private ObjectCell ObjectCell;
-    private ObjectProdModel ObjectProdModel;
-    private ObjectRoute ObjectRoute;
-    private ObjectLot ObjectLot;
 }
