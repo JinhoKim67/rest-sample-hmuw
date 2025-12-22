@@ -10,7 +10,6 @@ public class Event03EqpCellMoveStart {
     private Long timestamp;
 
     private String trayId;
-    private String cellId;
 
     private Action action; // Cell에 들어가면 In Event / Cell에서 나오면 Out Event
     public enum Action { IN, OUT }

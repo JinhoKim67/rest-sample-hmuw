@@ -1,4 +1,4 @@
-package com.ubisam.demo.domain;
+package com.ubisam.demo.domain.old;
 
 import java.util.UUID;
 
