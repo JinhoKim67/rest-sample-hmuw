@@ -1,18 +1,19 @@
 package com.ubisam.demo.domain;
 
+import jakarta.persistence.*;
+import lombok.*;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Data;
-
 @Entity
-@Data
+@Getter @Setter
+@NoArgsConstructor
 public class ObjectPort {
-    
+
     @Id
     private UUID id;
-    private String name;
-    private String type;
 
+    private String portId;      // 예: INLET_01, OUTLET_01
+    private PortType portType;  // INLET / OUTLET
+
+    public enum PortType { INLET, OUTLET }
 }

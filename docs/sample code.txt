@@ -1,0 +1,230 @@
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+// ===== 공통 =====
+
+interface Identifiable {
+    String id();
+}
+
+enum CellState {
+    CREATED,
+    IN_TRAY,
+    AT_INLET_PORT,
+    IN_BUFFER,
+    IN_PROCESS,
+    PROCESSED_OK,
+    PROCESSED_NG,
+    AT_OUTLET_PORT,
+    SHIPPED
+}
+
+enum TrayState {
+    EMPTY,
+    LOADED,
+    AT_INLET_PORT,
+    IN_BUFFER,
+    IN_PROCESS,
+    AT_OUTLET_PORT,
+    RELEASED
+}
+
+enum PortType { INLET, OUTLET }
+enum PortState { IDLE, OCCUPIED, BLOCKED }
+
+enum EquipmentState { IDLE, READY, RUNNING, ALARM, DOWN }
+
+enum ProcessResult { OK, NG, UNKNOWN }
+
+// ===== 제품/레시피/라우트 =====
+
+final class ProductModel implements Identifiable {
+    private final String modelId;
+    private final String name;
+
+    public ProductModel(String modelId, String name) {
+        this.modelId = modelId;
+        this.name = name;
+    }
+    @Override public String id() { return modelId; }
+    public String name() { return name; }
+}
+
+final class ProcessCondition {
+    // 모델/공정별 조건(예: 전류, 전압, 온도, 시간 등)
+    public final double chargeCurrentA;
+    public final double chargeVoltageV;
+    public final double temperatureC;
+    public final int durationSec;
+
+    public ProcessCondition(double chargeCurrentA, double chargeVoltageV, double temperatureC, int durationSec) {
+        this.chargeCurrentA = chargeCurrentA;
+        this.chargeVoltageV = chargeVoltageV;
+        this.temperatureC = temperatureC;
+        this.durationSec = durationSec;
+    }
+}
+
+final class Recipe implements Identifiable {
+    private final String recipeId;
+    private final String name;
+    private final ProcessCondition condition;
+
+    public Recipe(String recipeId, String name, ProcessCondition condition) {
+        this.recipeId = recipeId;
+        this.name = name;
+        this.condition = condition;
+    }
+    @Override public String id() { return recipeId; }
+    public String name() { return name; }
+    public ProcessCondition condition() { return condition; }
+}
+
+final class Route implements Identifiable {
+    private final String routeId;
+    private final List<String> steps; // "JIG_FORMATION", "AGING", "OCV_CHECK" ...
+
+    public Route(String routeId, List<String> steps) {
+        this.routeId = routeId;
+        this.steps = List.copyOf(steps);
+    }
+    @Override public String id() { return routeId; }
+    public List<String> steps() { return steps; }
+}
+
+// ===== 셀/트레이 =====
+
+final class Cell implements Identifiable {
+    private final String cellId;
+    private final ProductModel model;
+    private CellState state = CellState.CREATED;
+    private ProcessResult lastResult = ProcessResult.UNKNOWN;
+
+    public Cell(String cellId, ProductModel model) {
+        this.cellId = cellId;
+        this.model = model;
+    }
+
+    @Override public String id() { return cellId; }
+    public ProductModel model() { return model; }
+    public CellState state() { return state; }
+    public ProcessResult lastResult() { return lastResult; }
+
+    public void moveTo(CellState newState) { this.state = newState; }
+    public void setResult(ProcessResult r) { this.lastResult = r; }
+}
+
+final class Tray implements Identifiable {
+    private final String trayId;
+    private final List<Cell> cells;
+    private TrayState state = TrayState.EMPTY;
+
+    public Tray(String trayId, List<Cell> cells) {
+        if (cells.size() != 20) throw new IllegalArgumentException("Tray must contain 20 cells");
+        this.trayId = trayId;
+        this.cells = new ArrayList<>(cells);
+        this.state = TrayState.LOADED;
+        cells.forEach(c -> c.moveTo(CellState.IN_TRAY));
+    }
+
+    @Override public String id() { return trayId; }
+    public List<Cell> cells() { return Collections.unmodifiableList(cells); }
+    public TrayState state() { return state; }
+
+    public void moveTo(TrayState newState) { this.state = newState; }
+}
+
+// ===== 포트/버퍼 =====
+
+final class Port implements Identifiable {
+    private final String portId;
+    private final PortType type;
+    private PortState state = PortState.IDLE;
+    private Tray currentTray;
+
+    public Port(String portId, PortType type) {
+        this.portId = portId;
+        this.type = type;
+    }
+
+    @Override public String id() { return portId; }
+    public PortType type() { return type; }
+    public PortState state() { return state; }
+    public Optional<Tray> tray() { return Optional.ofNullable(currentTray); }
+
+    public void occupy(Tray tray) {
+        if (state != PortState.IDLE) throw new IllegalStateException("Port not IDLE");
+        this.currentTray = tray;
+        this.state = PortState.OCCUPIED;
+    }
+
+    public Tray release() {
+        if (currentTray == null) throw new IllegalStateException("No tray to release");
+        Tray t = currentTray;
+        currentTray = null;
+        state = PortState.IDLE;
+        return t;
+    }
+}
+
+final class Buffer implements Identifiable {
+    private final String bufferId;
+    private final int capacity;
+    private final Deque<Tray> queue = new ArrayDeque<>();
+
+    public Buffer(String bufferId, int capacity) {
+        this.bufferId = bufferId;
+        this.capacity = capacity;
+    }
+
+    @Override public String id() { return bufferId; }
+
+    public void enqueue(Tray tray) {
+        if (queue.size() >= capacity) throw new IllegalStateException("Buffer full");
+        queue.addLast(tray);
+    }
+
+    public Tray dequeue() {
+        Tray t = queue.pollFirst();
+        if (t == null) throw new IllegalStateException("Buffer empty");
+        return t;
+    }
+
+    public int size() { return queue.size(); }
+}
+
+// ===== 바코드 리더 =====
+
+interface BarcodeReader extends Identifiable {
+    BarcodeReadResult read();
+}
+
+final class BarcodeReadResult {
+    public final String trayId;
+    public final List<String> cellIds; // 20개
+    public BarcodeReadResult(String trayId, List<String> cellIds) {
+        this.trayId = trayId;
+        this.cellIds = cellIds;
+    }
+}
+
+// ===== 설비/지그 포메이션 =====
+
+interface Equipment extends Identifiable {
+    EquipmentState state();
+}
+
+final class JigFormationEquipment implements Equipment {
+    private final String equipmentId;
+    private EquipmentState state = EquipmentState.IDLE;
+
+    public JigFormationEquipment(String equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    @Override public String id() { return equipmentId; }
+    @Override public EquipmentState state() { return state; }
+
+    public void setState(EquipmentState s) { this.state = s; }
+}

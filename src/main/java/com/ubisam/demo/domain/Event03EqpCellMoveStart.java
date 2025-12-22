@@ -2,13 +2,13 @@ package com.ubisam.demo.domain;
 
 import lombok.Data;
 
-// 장비가 트레이 투입 Port에 도착 Event 보고
+// Cell 이재 작업 시작 with Tray ID
 @Data
-public class Event01EqpInletTrayArrival {
+public class Event03EqpCellMoveStart {
 
     private String eventId;
     private Long timestamp;
-    private ObjectTray ObjectTray;
+    private ObjectCell ObjectTray;
     private ObjectCell ObjectCell;
 
     private Action action; // Cell에 들어가면 In Event / Cell에서 나오면 Out Event

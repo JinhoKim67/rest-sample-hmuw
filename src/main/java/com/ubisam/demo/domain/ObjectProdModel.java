@@ -8,10 +8,10 @@ import lombok.Data;
 
 @Entity
 @Data
-public class ProductModel {
+public class ObjectProdModel {
     @Id
     private UUID id;
-    private String modelCode;
-    private ProcessCondition condition;
-    private Route route;
+    private final String modelId;
+    private final String name;
+    private ObjectRoute route;
 }

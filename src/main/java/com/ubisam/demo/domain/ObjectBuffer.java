@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class ObjetBuffer {
+public class ObjectBuffer {
     
     @Id
     private UUID id;
