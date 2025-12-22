@@ -1,6 +1,6 @@
 package com.ubisam.demo.domain.old;
 import com.ubisam.demo.domain.ObjectCell;
-import com.ubisam.demo.domain.ObjetBuffer;
+import com.ubisam.demo.domain.ObjectBuffer;
 
 import jakarta.persistence.Id;
 import lombok.Data;
@@ -11,7 +11,7 @@ public class Event03BufferCellBound {
 
     @Id
     private Long timestamp;
-    private ObjetBuffer bufferObject;
+    private ObjectBuffer bufferObject;
     private ObjectCell  batteryCell;
     private String action; 
 

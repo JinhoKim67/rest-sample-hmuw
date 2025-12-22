@@ -1,7 +1,7 @@
 package com.ubisam.demo.domain.old;
 
 import com.ubisam.demo.domain.ObjectCell;
-import com.ubisam.demo.domain.ObjetBuffer;
+import com.ubisam.demo.domain.ObjectBuffer;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import lombok.Data;
 public class Event06BufferCellUnBound {
 
     private Long timestamp;
-    private ObjetBuffer bufferObject;
+    private ObjectBuffer bufferObject;
     private ObjectCell batteryCell;
     private String action;
     
