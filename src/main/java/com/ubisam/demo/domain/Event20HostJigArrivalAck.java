@@ -4,7 +4,7 @@ import lombok.Data;
 
 // Jig 도착보고 응답
 @Data
-public class Event20HostJigLoadRequestAck {
+public class Event20HostJigArrivalAck {
     private String ackId;
     private Long timestamp;
 

@@ -8,6 +8,6 @@ public class Event05EqpCellInfoRequest {
 
     private String eventId;
     private Long timestamp;
-    
-    private ObjectCell ObjectCell;
+
+    private String trayId;
 }

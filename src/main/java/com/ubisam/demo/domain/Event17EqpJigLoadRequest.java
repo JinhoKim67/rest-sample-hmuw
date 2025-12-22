@@ -9,5 +9,5 @@ public class Event17EqpJigLoadRequest {
     private String eventId;
     private Long timestamp;
     
-    private ObjectCell ObjectCell;
+    private String cellId;
 }
